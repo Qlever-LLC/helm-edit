@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"reflect"
@@ -34,9 +33,9 @@ type editCmd struct {
 }
 
 func newEditCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
-
 	edit := &editCmd{
-		out: out}
+		out: out,
+	}
 
 	cmd := &cobra.Command{
 		Use:   "edit [flags] RELEASE",
@@ -46,7 +45,7 @@ func newEditCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 			edit.cfg = cfg
 			edit.editor = os.ExpandEnv(edit.editor)
 			if len(args) != 1 {
-				return fmt.Errorf("This command neeeds 1 argument: release name")
+				return fmt.Errorf("this command neeeds 1 argument: release name")
 			}
 			edit.release = args[0]
 			return edit.run()
@@ -63,20 +62,20 @@ func newEditCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 	return cmd
 }
 
-func (e *editCmd) vals(rel *release.Release) (map[string]interface{}, error) {
+func (e *editCmd) vals(rel *release.Release) (map[string]any, error) {
 	values := action.NewGetValues(e.cfg)
 	values.AllValues = e.allValues
 	values.Version = e.revision
 	return values.Run(rel.Name)
 }
 
-func (e *editCmd) getDefaultsIntersection(overridesMap map[string]interface{}, defaultMap map[string]interface{}) map[string]interface{} {
-	newMap := map[string]interface{}{}
+func (e *editCmd) getDefaultsIntersection(overridesMap map[string]any, defaultMap map[string]any) map[string]any {
+	newMap := map[string]any{}
 	for key, value := range overridesMap {
 		if _, ok := defaultMap[key]; ok {
 			if !reflect.DeepEqual(value, defaultMap[key]) {
-				innerMap, ok2 := value.(map[string]interface{})
-				innerMapDefault, ok2Default := defaultMap[key].(map[string]interface{})
+				innerMap, ok2 := value.(map[string]any)
+				innerMapDefault, ok2Default := defaultMap[key].(map[string]any)
 				if ok2 && ok2Default {
 					newMap[key] = e.getDefaultsIntersection(innerMap, innerMapDefault)
 				} else {
@@ -91,7 +90,6 @@ func (e *editCmd) getDefaultsIntersection(overridesMap map[string]interface{}, d
 }
 
 func (e *editCmd) run() error {
-
 	getRelease := action.NewGet(e.cfg)
 	// getRelease.Version = 0
 	res, err := getRelease.Run(e.release)
@@ -99,7 +97,7 @@ func (e *editCmd) run() error {
 		return err
 	}
 
-	tmpfile, err := ioutil.TempFile(os.TempDir(), fmt.Sprintf("helm-edit-%s", res.Name))
+	tmpfile, err := os.CreateTemp(os.TempDir(), fmt.Sprintf("helm-edit-%s*.yaml", res.Name))
 	if err != nil {
 		return err
 	}
@@ -134,10 +132,7 @@ func (e *editCmd) run() error {
 	if err != nil {
 		return err
 	}
-	if err != nil {
-		return err
-	}
-	var userSuppliedVal map[string]interface{}
+	var userSuppliedVal map[string]any
 	if e.disableDefaultIntersection {
 		userSuppliedVal = newValues.AsMap()
 	} else {
