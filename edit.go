@@ -52,7 +52,7 @@ func newEditCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 		},
 	}
 	f := cmd.Flags()
-	f.BoolVarP(&edit.allValues, "all", "a", false, "edit all (computed) vals")
+	f.BoolVarP(&edit.allValues, "all", "a", true, "edit all (computed) vals")
 	f.IntVar(&edit.revision, "revision", 0, "edit the current chart with values from old revision")
 	f.DurationVar(&edit.timeout, "timeout", 300*time.Second, "time to wait for any individual Kubernetes operation (like Jobs for hooks)")
 	f.BoolVar(&edit.wait, "wait", false, "if set, will wait until all Pods, PVCs, Services, and minimum number of Pods of a Deployment are in a ready state before marking the release as successful. It will wait for as long as --timeout")
