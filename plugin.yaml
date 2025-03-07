@@ -7,7 +7,7 @@ ignoreFlags: false
 useTunnel: true
 command: ${HELM_PLUGIN_DIR}/helm-edit
 hooks:
-  install: ${HELM_PLUGIN_DIR}\install.sh
+  install: ${HELM_PLUGIN_DIR}/install.sh
 #platformCommand:
 #  - command: ${HELM_PLUGIN_DIR}/helm-edit
 #  - command: ${HELM_PLUGIN_DIR}\helm-edit.exe
