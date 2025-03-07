@@ -1,13 +1,16 @@
-name: "edit"
-version: "0.6.0+qlever"
-usage: "edit a release"
+name: edit
+version: 0.6.0+qlever
+usage: edit a release
 description: |-
   Edit a release.
 ignoreFlags: false
 useTunnel: true
-command: "$HELM_PLUGIN_DIR/helm-edit"
+platformCommand:
+  - command: ${HELM_PLUGIN_DIR}/helm-edit
+  - command: ${HELM_PLUGIN_DIR}\helm-edit.exe
+    os: windows
 platformHooks:
   install:
-    - command: "$HELM_PLUGIN_DIR/install.ps1"
+    - command: ${HELM_PLUGIN_DIR}/install.ps1
       os: windows
-    - command: "$HELM_PLUGIN_DIR/install.sh"
+    - command: ${HELM_PLUGIN_DIR}\install.sh
