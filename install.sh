@@ -15,7 +15,7 @@ os=$(uname -s | tr '[:upper:]' '[:lower:]')
 url="https://github.com/qlever-llc/helm-edit/releases/download/v${HELM_EDIT_VERSION}/helm-edit_${os}_amd64"
 
 if command -v go; then
-	go build
+	cd "${HELM_PLUGIN_DIR}" && go build
 	#cp helm-edit "${file}"
 elif command -v wget; then
 	wget -O "${file}" "${url}"
