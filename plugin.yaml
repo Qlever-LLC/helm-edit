@@ -6,5 +6,8 @@ description: |-
 ignoreFlags: false
 useTunnel: true
 command: "$HELM_PLUGIN_DIR/helm-edit"
-hooks:
-  install: "$HELM_PLUGIN_DIR/install.sh"
+platformHooks:
+  install:
+    - command: "$HELM_PLUGIN_DIR/install.ps1"
+      os: windows
+    - command: "$HELM_PLUGIN_DIR/install.sh"
